@@ -623,6 +623,13 @@ declare module 'discord.js' {
           format: 'default' | AllowedImageFormat,
           size: number,
         ) => string;
+        GuildAvatar: (
+          guildID: Snowflake | number,
+          userID: Snowflake | number,
+          hash: string,
+          format: 'default' | AllowedImageFormat,
+          size: number,
+        ) => string;
         Banner: (guildID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         Icon: (
           userID: Snowflake | number,
@@ -1062,6 +1069,7 @@ declare module 'discord.js' {
   export class GuildMember extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: unknown, guild: Guild);
     public readonly bannable: boolean;
+    public avatar: string | null;
     public deleted: boolean;
     public readonly displayColor: number;
     public readonly displayHexColor: HexColorString;
@@ -1091,6 +1099,7 @@ declare module 'discord.js' {
     public kick(reason?: string): Promise<GuildMember>;
     public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
     public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
+    public avatarURL(options?: ImageURLOptions): string | null;
     public toJSON(): unknown;
     public toString(): MemberMention;
     public valueOf(): string;

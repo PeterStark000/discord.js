@@ -62,6 +62,12 @@ class GuildMember extends Base {
      * @type {?string}
      */
     this.nickname = null;
+    
+    /**
+     * The guild avatar of this member, if they have one
+     * @type {?string}
+     */
+    this.avatar = null;
 
     /**
      * Whether this member has yet to pass the guild's membership gate
@@ -82,6 +88,7 @@ class GuildMember extends Base {
       this.user = this.client.users.add(data.user, true);
     }
 
+    if ('avatar' in data) this.avatar = data.avatar;
     if ('nick' in data) this.nickname = data.nick;
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) {
@@ -292,6 +299,16 @@ class GuildMember extends Base {
   setNickname(nick, reason) {
     return this.edit({ nick }, reason);
   }
+  
+  /**
+   * A link to the member's avatar.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  avatarURL({ format, size, dynamic } = {}) {
+    if (!this.avatar) return null;
+    return this.client.rest.cdn.GuildAvatar(this.guild.id, this.id, this.avatar, format, size, dynamic);
+  }
 
   /**
    * Creates a DM channel between the client and this member.
@@ -359,6 +376,7 @@ class GuildMember extends Base {
       this.lastMessageChannelID === member.lastMessageChannelID &&
       this.nickname === member.nickname &&
       this.pending === member.pending &&
+      this.avatar === member.avatar &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length && this._roles.every((role, i) => role === member._roles[i])))
     );
